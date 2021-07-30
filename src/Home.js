@@ -1,26 +1,19 @@
 import { useEffect, useState } from "react";
-// import APIKEY from ""
 
 function Home() {
-  const [currentJoke, setCurrentJoke] = useState({})
-  const [sucessfulFetchOfJoke, setSuccessfulFetchOfJoke] = useState(false)
+  const [currentJoke, setCurrentJoke] = useState({body:{setup:"", punchline:""}})
 
   const fetchJoke = async (e) => {
-    // e.preventDefault();
-
+    const API_KEY = process.env.REACT_APP_API_KEY;
     try{
         const res = await fetch("https://dad-jokes.p.rapidapi.com/random/joke/png", {
           "method": "GET",
           "headers": {
-            "x-rapidapi-key": "1da7fd69e4msh5badf0a4f62ebc6p191fd7jsna0970d880515",
+            "x-rapidapi-key": API_KEY,
             "x-rapidapi-host": "dad-jokes.p.rapidapi.com"
           }
         })
-        // .then(response => {
-        //   console.log(response);
-        // })
         const data = await res.json()
-        console.log(data.body.setup)
         setCurrentJoke(data)
     } catch (err){
         console.error(err)
@@ -30,25 +23,15 @@ function Home() {
   useEffect(() => {
     fetchJoke();
   }, [])
-  useEffect(() => {
-    setSuccessfulFetchOfJoke(true)
-  }, [currentJoke])
    
-
   return (
     <div className="App">
-      {!sucessfulFetchOfJoke
-        ? 
-        <h1>Loading</h1>
-        :
-        <div>
-          <button onClick={fetchJoke}>New Joke</button>
-          <h1>Joke</h1> 
-          <p><b>Setup: </b> {currentJoke.body.setup}</p>
-          <p><b>Punchlike:</b> {currentJoke.body.punchline}</p>
-        </div>
-      }
-
+      <h1 className="randomJokeHeader">Random Joke</h1> 
+      <div className="jokeBox">
+        <p className="setup"><b>Setup: </b> {currentJoke.body.setup}</p>
+        <p className="punchline"><b>Punchline:</b> {currentJoke.body.punchline}</p>
+        <button onClick={fetchJoke}>New Joke</button>
+      </div>
     </div>
   );
 }
